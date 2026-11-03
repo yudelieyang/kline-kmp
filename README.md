@@ -65,6 +65,4 @@ The Gradle XML reports from **2026-11-03** contain 50 Desktop JVM tests and 49 A
 - On the tested iQOO 15, airplane mode did not disable Wi-Fi; disable Wi-Fi separately when testing interruption and restore the original settings afterward.
 - Android 13 themed icons fall back to the regular launcher icon because no monochrome layer is provided.
 
-Built with an AI coding assistant. I made the design decisions, reviewed the code line by line in structured review sessions, and verified behavior on a physical Android device.
-
 This app displays cryptocurrency market data only. It does not offer trading or investment advice and is not affiliated with Binance or Futu.
