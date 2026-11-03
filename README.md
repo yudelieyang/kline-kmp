@@ -69,6 +69,17 @@ On a V2505A running Android 16, the non-debuggable benchmark build with R8 disab
 
 In a separate live BTCUSDT run using a rebuilt benchmark APK with diagnostic logging, 60 closed candles matched a later Binance REST response for open time, OHLC and base volume after conversion to the app's numeric representation. The log recorded no reconnect or resynchronization during this run. TOTAL PSS was 107,962 KiB at the start and 183,534 KiB after the one-hour interval. Two memory snapshots do not establish a leak or peak usage; the candle comparison does not prove every intermediate update was correct. [Raw outputs, provenance and limitations](docs/perf/PERF_RESULTS.md#live-correctness-and-memory).
 
+## How this project was built
+
+This app was built in an AI-native workflow: AI coding agents (mainly Codex) wrote most of the code, while I owned the specification, the design decisions, the review and the verification.
+
+- **Spec before code.** Each milestone started from a written plan with explicit scope and acceptance criteria, committed to the repository: [M1](M1_PLAN.md)–[M4](M4_PLAN.md), the [UI spec](docs/design/UI_SPEC.md), [symbol switching](docs/design/SYMBOL_PLAN.md) and [performance measurement](docs/perf/PERF_PLAN.md).
+- **Design decisions are mine.** Before each milestone the agent questioned me one design decision at a time, for example Double versus fixed-point prices, whether a bad CSV row fails the whole file, subscribing to the WebSocket before taking the REST snapshot, how to order conflicting candle versions, and whether a moving average may span a missing minute. I chose, and the choice went into the plan.
+- **Standing rules for the agent.** No number may appear in docs or reports unless it comes from a command that was actually run; the chart is hand-written with no chart library; the app is display-only; new dependencies need my approval; work stops at the end of each milestone for review.
+- **Verification gates.** Test counts are read from Gradle's XML reports. Behavior is checked on a physical Android phone with screenshots, live data is cross-checked against Binance REST, and network recovery was tested with a real airplane-mode outage.
+- **Review after implementation.** After each milestone I reviewed the actual code question by question. These reviews found and fixed real defects, including a last-update time that could move backwards, a reconnect timer that counted handshake time as stable connection time, axis labels that could draw outside the chart, and pan and zoom gestures restarted by every new candle. Findings that were not fixed are listed under Known limits.
+- **Cross-checking between assistants.** UI design was specified in a separate assistant session and implemented by Codex; plans and reports were reviewed against the repository before I approved them.
+
 ## Known limits
 
 - Known time gaps and contradictory versions trigger resynchronization; a REST snapshot may itself lag, and undetectable missing updates cannot be ruled out. Background repair, rate-limit cooldown, source selection, proactive connection rotation, history trimming and bad-message thresholds are planned, not implemented.
