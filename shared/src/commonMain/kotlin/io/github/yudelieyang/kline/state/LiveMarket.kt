@@ -70,6 +70,7 @@ class LiveMarketHolder(
     private val symbol: MarketSymbol = MarketSymbol.BTCUSDT,
     private val wsUrl: String = websocketUrl("wss://data-stream.binance.vision:443", symbol),
     private val restUrl: String = "https://data-api.binance.vision",
+    private val diagnostic: ((String) -> Unit)? = null,
 ) {
     private val mutableState = MutableStateFlow(LiveState())
     val state = mutableState.asStateFlow()
@@ -86,6 +87,7 @@ class LiveMarketHolder(
             while (currentCoroutineContext().isActive) {
                 check(session < Long.MAX_VALUE) { "Session counter exhausted" }
                 val currentSession = ++session
+                diagnostic?.invoke("SESSION session=$currentSession")
                 var connectedAt: TimeMark? = null
                 var received = false
                 var requestedShutdown = false
@@ -144,6 +146,7 @@ class LiveMarketHolder(
                                         val lastAccepted = lastAcceptedBufferedTime(mutableState.value.lastUpdate, reconciliation.acceptedBuffered, bufferedEventTimes)
                                         bufferedEventTimes.clear()
                                         mutableState.value = mutableState.value.copy(candles = versions.map { it.candle }, status = "Live", lastUpdate = lastAccepted)
+                                        diagnostic?.invoke("SYNC session=$currentSession")
                                         logSynchronizedCandles(versions.takeLast(10).map { it.candle })
                                     }
                                     is Event.Message -> when (val message = event.value) {
@@ -166,7 +169,12 @@ class LiveMarketHolder(
                                                 if (newest != null && message.value.candle.openTime > newest + 60_000L) error("Live data has a time gap")
                                                 val result = mergeKline(versions, message.value)
                                                 when (result) {
-                                                    is MergeResult.Merged -> versions = result.candles
+                                                    is MergeResult.Merged -> {
+                                                        versions = result.candles
+                                                        if (message.value.candle.isClosed && versions.any { it == message.value }) {
+                                                            diagnostic?.invoke("LIVE_CLOSED session=$currentSession openTime=${message.value.candle.openTime}")
+                                                        }
+                                                    }
                                                     is MergeResult.Conflict -> error(result.reason)
                                                     MergeResult.Ignored -> Unit
                                                 }
@@ -203,6 +211,7 @@ class LiveMarketHolder(
                 val wait = reconnectDelayMillis(failures, Random.nextDouble(0.5, 1.0))
                 failures++
                 mutableState.value = mutableState.value.copy(status = "${mutableState.value.status}; retry $failures")
+                diagnostic?.invoke("RETRY session=$currentSession status=${mutableState.value.status}")
                 delay(wait)
             }
         } finally { client.close() }

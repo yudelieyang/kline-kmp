@@ -27,6 +27,12 @@ Offline BTC CSV ─────────────────────�
 
 The live session subscribes to the WebSocket before fetching a REST snapshot, buffers updates and reconciles them with the snapshot. Ktor CIO handles network requests; one state owner serializes incoming events and publishes immutable state through `StateFlow`. The UI collects that state. Switching pairs creates a fresh holder. The offline sample is clearly labeled and never presented as another pair's data.
 
+The offline benchmark dataset was downloaded on 2026-11-03 at 08:44:29 -05:00 from Binance's market-data REST endpoint. The downloader checks that the requested closed candles are consecutive. Download command and output: [dataset-download.txt](docs/perf/results/dataset-download.txt).
+
+```powershell
+python scripts/download_sample.py --benchmark-5000
+```
+
 ## Run on Windows
 
 Install Android Studio with the Android SDK (compile SDK 37) and a JDK. The Gradle daemon is configured for Azul JDK 21; the wrapper can download the configured toolchain. Android Studio can configure the SDK path in `local.properties`. The Gradle wrapper and dependencies require network access on first use.
@@ -56,6 +62,12 @@ The Gradle XML reports from **2026-11-03** contain 50 Desktop JVM tests and 49 A
 - On an iQOO 15, a network interruption was tested using airplane mode and separately disabling Wi-Fi; the live connection recovered after network access was restored. After recovery, 10 candle open times from the app's synchronization log matched Binance REST, including minutes during the interruption. This comparison covers those open times only; it does not establish that every update or candle value was recovered. The device kept Wi-Fi enabled when airplane mode alone was turned on.
 - For BTCUSDT, ETHUSDT and SOLUSDT, four closed candles per pair were compared with Binance REST at matching UTC minutes. Close and volume values matched the displayed precision. Pair switching and crosshair reset were also checked on the device. [Details and screenshots](docs/design/SYMBOL_PLAN.md#acceptance-results).
 - Desktop and Android UI checks, screenshot inspection and known test coverage are recorded in [UI verification](docs/design/VERIFICATION.md).
+
+## Measured Android performance
+
+On a V2505A running Android 16, the non-debuggable benchmark build with R8 disabled was tested using offline data and repeated scripted chart drags. With adaptive refresh enabled, the system reported 60.000004 Hz in each mid-run display snapshot. Across five runs per combination, the median gfxinfo janky-frame percentage was 2.60% for 500 candles at 8 dp, 2.82% for 500 at 2 dp, 1.96% for 5,000 at 8 dp, and 2.82% for 5,000 at 2 dp. These figures describe the app-wide measurement windows on this device, not a guarantee for other devices. Percentiles use histogram buckets; refresh rate could vary during a gesture. [Commands, each run, frame-time percentiles and limitations](docs/perf/PERF_RESULTS.md#android-drag-test).
+
+In a separate live BTCUSDT run using a rebuilt benchmark APK with diagnostic logging, 60 closed candles matched a later Binance REST response for open time, OHLC and base volume after conversion to the app's numeric representation. The log recorded no reconnect or resynchronization during this run. TOTAL PSS was 107,962 KiB at the start and 183,534 KiB after the one-hour interval. Two memory snapshots do not establish a leak or peak usage; the candle comparison does not prove every intermediate update was correct. [Raw outputs, provenance and limitations](docs/perf/PERF_RESULTS.md#live-correctness-and-memory).
 
 ## Known limits
 

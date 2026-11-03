@@ -1,0 +1,12 @@
+Command: python scripts/download_sample.py --benchmark-5000
+URL: https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&limit=1000&endTime=1793713433595
+URL: https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&limit=1000&endTime=1793653439999
+URL: https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&limit=1000&endTime=1793593439999
+URL: https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&limit=1000&endTime=1793533439999
+URL: https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&limit=1000&endTime=1793473439999
+URL: https://data-api.binance.vision/api/v3/klines?symbol=BTCUSDT&interval=1m&limit=2&endTime=1793413439999
+Server time (milliseconds): 1793713433596
+Local time: 2026-11-03T08:44:29.169429-05:00
+Rows: 5000
+Last candle closed: True
+CSV: shared\src\commonMain\composeResources\files\btcusdt_1m_5000.csv

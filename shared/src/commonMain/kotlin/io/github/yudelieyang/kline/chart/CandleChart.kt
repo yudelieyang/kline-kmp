@@ -50,12 +50,12 @@ data class ChartColors(
 private data class CrosshairSelection(val openTime: Long, val price: Double)
 
 @Composable
-fun CandleChart(candles: List<Candle>, modifier: Modifier = Modifier, colors: ChartColors) {
+fun CandleChart(candles: List<Candle>, modifier: Modifier = Modifier, colors: ChartColors, initialSlotDp: Int = 8) {
     val density = LocalDensity.current.density
     val measurer = rememberTextMeasurer()
     val style = TextStyle(color = colors.axisText, fontSize = 10.sp)
     var size by remember { mutableStateOf(IntSize.Zero) }
-    var viewport by remember(density) { mutableStateOf(ChartViewport(0f, 8f * density)) }
+    var viewport by remember(density, initialSlotDp) { mutableStateOf(ChartViewport(0f, initialSlotDp * density)) }
     var previousCandles by remember { mutableStateOf(candles) }
     var touchCrosshair by remember { mutableStateOf<CrosshairSelection?>(null) }
     var movingCrosshair by remember { mutableStateOf(false) }

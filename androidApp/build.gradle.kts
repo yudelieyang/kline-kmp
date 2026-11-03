@@ -29,6 +29,7 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+        buildConfigField("boolean", "PERF_BUILD", "false")
     }
     packaging {
         resources {
@@ -43,6 +44,14 @@ android {
                 "proguard-rules.pro"
             )
         }
+        create("benchmark") {
+            initWith(getByName("release"))
+            signingConfig = signingConfigs.getByName("debug")
+            isDebuggable = false
+            isMinifyEnabled = false
+            matchingFallbacks += listOf("release")
+            buildConfigField("boolean", "PERF_BUILD", "true")
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -50,5 +59,6 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }

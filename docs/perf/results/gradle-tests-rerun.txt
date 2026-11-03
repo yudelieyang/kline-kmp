@@ -1,0 +1,83 @@
+Reusing configuration cache.
+> Task :shared:androidPreBuild UP-TO-DATE
+> Task :shared:convertXmlValueResourcesForJvmTest NO-SOURCE
+> Task :shared:preAndroidMainBuild UP-TO-DATE
+> Task :shared:kmpPartiallyResolvedDependenciesChecker
+> Task :shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :shared:generateAndroidHostTestAssets UP-TO-DATE
+> Task :shared:generateAndroidMainAssets UP-TO-DATE
+> Task :shared:preAndroidHostTestBuild UP-TO-DATE
+> Task :shared:copyNonXmlValueResourcesForJvmTest NO-SOURCE
+> Task :shared:convertXmlValueResourcesForAndroidMain NO-SOURCE
+> Task :shared:checkJvmMainComposeLibrariesCompatibility
+> Task :shared:prepareComposeResourcesTaskForJvmTest NO-SOURCE
+> Task :shared:copyNonXmlValueResourcesForAndroidMain NO-SOURCE
+> Task :shared:checkJvmTestComposeLibrariesCompatibility
+> Task :shared:generateResourceAccessorsForJvmTest NO-SOURCE
+> Task :shared:convertXmlValueResourcesForCommonTest NO-SOURCE
+> Task :shared:convertXmlValueResourcesForJvmMain NO-SOURCE
+> Task :shared:copyNonXmlValueResourcesForCommonTest NO-SOURCE
+> Task :shared:copyNonXmlValueResourcesForJvmMain NO-SOURCE
+> Task :shared:prepareComposeResourcesTaskForAndroidMain NO-SOURCE
+> Task :shared:prepareComposeResourcesTaskForCommonTest NO-SOURCE
+> Task :shared:prepareComposeResourcesTaskForJvmMain NO-SOURCE
+> Task :shared:generateResourceAccessorsForCommonTest NO-SOURCE
+> Task :shared:generateResourceAccessorsForJvmMain NO-SOURCE
+> Task :shared:generateResourceAccessorsForAndroidMain NO-SOURCE
+> Task :shared:convertXmlValueResourcesForAndroidHostTest NO-SOURCE
+> Task :shared:copyNonXmlValueResourcesForAndroidHostTest NO-SOURCE
+> Task :shared:prepareComposeResourcesTaskForAndroidHostTest NO-SOURCE
+> Task :shared:generateResourceAccessorsForAndroidHostTest NO-SOURCE
+> Task :shared:processAndroidHostTestJavaRes NO-SOURCE
+> Task :shared:assembleJvmTestResources
+> Task :shared:androidJar
+> Task :shared:generateAndroidMainEmptyResourceFiles
+> Task :shared:jvmTestProcessResources
+> Task :shared:processJvmTestResources SKIPPED
+> Task :shared:mapAndroidHostTestSourceSetPaths
+> Task :shared:mapAndroidMainSourceSetPaths
+> Task :shared:generateExpectResourceCollectorsForCommonMain
+> Task :shared:writeAndroidMainAarMetadata
+> Task :shared:generateAndroidHostTestResources
+> Task :shared:generateComposeResClass
+> Task :shared:copyNonXmlValueResourcesForCommonMain
+> Task :shared:checkAndroidHostTestAarMetadata
+> Task :shared:convertXmlValueResourcesForCommonMain
+> Task :shared:prepareComposeResourcesTaskForCommonMain
+> Task :shared:processAndroidMainManifest
+> Task :shared:copyAndroidMainComposeResourcesToAndroidAssets
+> Task :shared:assembleJvmMainResources
+> Task :shared:generateResourceAccessorsForCommonMain
+> Task :shared:packageAndroidMainResources
+> Task :shared:generateActualResourceCollectorsForJvmMain
+> Task :shared:generateActualResourceCollectorsForAndroidMain
+> Task :shared:parseAndroidMainLocalResources
+> Task :shared:mergeAndroidMainAssets
+> Task :shared:compileAndroidMainLibraryResources
+> Task :shared:jvmProcessResources
+> Task :shared:processJvmMainResources SKIPPED
+> Task :shared:processAndroidHostTestManifest
+> Task :shared:generateAndroidMainRFile
+> Task :shared:mergeAndroidHostTestAssets
+> Task :shared:mergeAndroidHostTestResources
+> Task :shared:processAndroidHostTestResources
+> Task :shared:packageAndroidHostTestForUnitTest
+> Task :shared:generateAndroidHostTestConfig
+> Task :shared:compileKotlinJvm
+> Task :shared:compileJvmMainJava NO-SOURCE
+> Task :shared:jvmMainClasses
+> Task :shared:compileAndroidMain
+> Task :shared:jvmJar
+> Task :shared:bundleAndroidMainClassesToCompileJar
+> Task :shared:bundleAndroidMainClassesToRuntimeJar
+> Task :shared:processAndroidMainJavaRes
+> Task :shared:compileAndroidHostTest
+> Task :shared:compileTestKotlinJvm
+> Task :shared:compileJvmTestJava NO-SOURCE
+> Task :shared:jvmTestClasses
+> Task :shared:testAndroidHostTest
+> Task :shared:jvmTest
+
+BUILD SUCCESSFUL in 15s
+45 actionable tasks: 45 executed
+Configuration cache entry reused.

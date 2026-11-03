@@ -19,6 +19,7 @@ import io.github.yudelieyang.kline.ui.*
 import io.github.yudelieyang.kline.ui.model.*
 import io.github.yudelieyang.kline.ui.theme.*
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.delay
 import kline_kmp_app.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 
@@ -26,15 +27,26 @@ private const val LIVE_WS_BASE = "wss://data-stream.binance.vision:443"
 private const val LIVE_REST_URL = "https://data-api.binance.vision"
 
 @Composable
-fun App(onDarkThemeChange: (Boolean) -> Unit = {}) {
+fun App(perfCount: Int? = null, perfWidthDp: Int = 8, perfDiagnostic: ((String) -> Unit)? = null, onDarkThemeChange: (Boolean) -> Unit = {}) {
     var symbol by remember { mutableStateOf(MarketSymbol.BTCUSDT) }
-    val holder = remember(symbol) { LiveMarketHolder(wsUrl = websocketUrl(LIVE_WS_BASE, symbol), restUrl = LIVE_REST_URL, symbol = symbol) }
+    val holder = remember(symbol) { LiveMarketHolder(wsUrl = websocketUrl(LIVE_WS_BASE, symbol), restUrl = LIVE_REST_URL, symbol = symbol, diagnostic = perfDiagnostic) }
     val state = key(holder) { holder.state.collectAsState().value }
-    LaunchedEffect(holder) { holder.run() }
+    LaunchedEffect(holder, perfCount) { if (perfCount == null) holder.run() }
+    LaunchedEffect(holder, perfDiagnostic) {
+        if (perfDiagnostic != null && perfCount == null) {
+            perfDiagnostic("START symbol=$symbol")
+            delay(3_690_000)
+            val snapshot = holder.state.value
+            val closed = snapshot.candles.filter { it.isClosed }.takeLast(60)
+            perfDiagnostic("SNAPSHOT_BEGIN status=${snapshot.status} count=${closed.size}")
+            closed.forEach { c -> perfDiagnostic("CANDLE ${c.openTime},${c.open},${c.high},${c.low},${c.close},${c.volume}") }
+            perfDiagnostic("SNAPSHOT_END count=${closed.size}")
+        }
+    }
     var darkOverride by remember { mutableStateOf<Boolean?>(null) }
     val dark = darkOverride ?: isSystemInDarkTheme()
     LaunchedEffect(dark) { onDarkThemeChange(dark) }
-    var mode by remember { mutableStateOf(DataSourceMode.Live) }
+    var mode by remember { mutableStateOf(if (perfCount == null) DataSourceMode.Live else DataSourceMode.Offline) }
     val displayedSymbol = if (mode == DataSourceMode.Offline) MarketSymbol.BTCUSDT else symbol
     var sample by remember { mutableStateOf<List<Candle>?>(null) }
     var sampleFailed by remember { mutableStateOf(false) }
@@ -42,7 +54,8 @@ fun App(onDarkThemeChange: (Boolean) -> Unit = {}) {
     LaunchedEffect(mode) {
         if (mode == DataSourceMode.Offline && sample == null) {
             sampleFailed = false
-            try { sample = CsvCandleSource("files/btcusdt_1m_sample.csv", Interval.ONE_MINUTE).loadHistory() }
+            val file = if (perfCount == 5000) "files/btcusdt_1m_5000.csv" else "files/btcusdt_1m_sample.csv"
+            try { sample = CsvCandleSource(file, Interval.ONE_MINUTE).loadHistory() }
             catch (e: CancellationException) { throw e }
             catch (e: Exception) { sampleFailed = true }
         }
@@ -78,13 +91,13 @@ fun App(onDarkThemeChange: (Boolean) -> Unit = {}) {
                 LoadedRangeNote(stats, mode)
                 MaRow(averages, mode == DataSourceMode.Live && candles.lastOrNull()?.isClosed == false)
                 StatusBanner(bannerText, mode == DataSourceMode.Offline, {
-                    mode = if (mode == DataSourceMode.Live) DataSourceMode.Offline else DataSourceMode.Live
+                    if (perfCount == null) mode = if (mode == DataSourceMode.Live) DataSourceMode.Offline else DataSourceMode.Live
                 }, Modifier.onSizeChanged { bannerHeight = with(density) { it.height.toDp() } })
                 Text(stringResource(Res.string.chart_volume, displayedSymbol.baseAsset), Modifier.padding(start = 12.dp),
                     style = KlineTypography.caption, color = colors.textSecondary)
                 key(mode, displayedSymbol) {
                     val chartModifier = Modifier.weight(1f).fillMaxWidth().padding(start = 8.dp, end = 4.dp)
-                    if (candles.isEmpty()) ChartPlaceholder(chartModifier) else CandleChart(candles, chartModifier, colors.chart)
+                    if (candles.isEmpty()) ChartPlaceholder(chartModifier) else CandleChart(candles, chartModifier, colors.chart, perfWidthDp)
                 }
                 HorizontalDivider(thickness = 1.dp, color = colors.divider)
                 RecentCandleList(rows, listHeight, displayedSymbol.baseAsset)

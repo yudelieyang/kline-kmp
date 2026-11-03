@@ -1,0 +1,13 @@
+Snapshot candles: 60
+Exact matches: 60
+Opened after recorded app start: 60
+Opened after start and observed closed from live after last sync: 60
+Opened after host-recorded launch: 60; of those, observed closed from live after last sync: 60
+Sessions: 1; reconnect sessions: 0; syncs: 1; resyncs: 0; retries: 0
+Event timestamps below are device logcat Unix seconds; host and device clocks can differ.
+1793715087.100 SESSION session=1
+1793715090.513 SYNC session=1
+Differences:
+None
+Extra REST open times: []
+Start comparisons use separate device and host clock readings; clock agreement is not assumed. Live provenance is conservative: only accepted closed updates after the last synchronization are counted; resynchronization may restore candles from REST.
